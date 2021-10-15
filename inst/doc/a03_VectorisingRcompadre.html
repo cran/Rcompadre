@@ -12,7 +12,7 @@
 
 <meta name="author" content="Patrick Barks" />
 
-<meta name="date" content="2021-04-29" />
+<meta name="date" content="2021-10-15" />
 
 <title>Vectorising with Rcompadre</title>
 
@@ -28,11 +28,19 @@
     </style>
 
 
-<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
 <style type="text/css" data-origin="pandoc">
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
 div.sourceCode { margin: 1em 0; }
 pre.sourceCode { margin: 0; }
@@ -133,20 +141,20 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <h1 class="title toc-ignore">Vectorising with Rcompadre</h1>
 <h4 class="author">Patrick Barks</h4>
-<h4 class="date">2021-04-29</h4>
+<h4 class="date">2021-10-15</h4>
 
 
 
 <div id="introduction" class="section level2">
 <h2>Introduction</h2>
 <p>COM(P)ADRE databases contain thousands of matrix population models. If we want to derive traits from a large set of these matrices, we’ll need to use either loops or vectorisation.</p>
-<p>Vectorising means applying a function to each element of a vector. Here vector is defined broadly — it could be a sequence of character strings, a column of a data frame, a list of matrices, etc. Vectorised code generally runs faster than loops, and many R users find that vectorised code is easier to write and understand.</p>
+<p>Vectorising means applying a function to each element of a vector. Here vector is defined broadly — it could be a sequence of character strings, a column of a <code>data.frame</code>, a <code>list</code> of matrices, etc. Vectorised code generally runs faster than loops, and many R users find that vectorised code is easier to write and understand.</p>
 </div>
 <div id="preliminaries" class="section level2">
 <h2>Preliminaries</h2>
-<p>We’ll start by loading a few packages and a dataset that we’ll be using throughout this vignette. The dataset <code>Compadre</code> is a subset of a recent COMPADRE release that’s built into Rcompadre.</p>
+<p>We’ll start by loading a few packages and a dataset that we’ll be using throughout this vignette. The dataset <code>Compadre</code> is a subset of a recent COMPADRE release that’s built into <code>Rcompadre</code>.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(Rcompadre)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(popbio)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(popdemo)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(Compadre)</span></code></pre></div>
 </div>
 <div id="introduction-to-vectorisation" class="section level2">
@@ -154,13 +162,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>To understand vectorisation, we first need a vector. For this purpose, we’ll extract a list of <strong>A</strong> matrices from the <code>mat</code> column of <code>Compadre</code>, and add this list of matrices to <code>Compadre</code> as a new column.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>Compadre<span class="sc">$</span>matA <span class="ot">&lt;-</span> <span class="fu">matA</span>(Compadre)</span></code></pre></div>
 <p>This new column, <code>Compadre$matA</code>, is both a vector and a list.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">is.vector</span>(Compadre<span class="sc">$</span>matA)   <span class="co"># it really is a vector</span></span>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">is.vector</span>(Compadre<span class="sc">$</span>matA) <span class="co"># it really is a vector</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] TRUE</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">is.list</span>(Compadre<span class="sc">$</span>matA)     <span class="co"># and also a list</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">is.list</span>(Compadre<span class="sc">$</span>matA) <span class="co"># and also a list</span></span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] TRUE</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(Compadre<span class="sc">$</span>matA)      <span class="co"># with 150 matrices</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(Compadre<span class="sc">$</span>matA) <span class="co"># with 150 matrices</span></span>
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 150</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>Compadre<span class="sc">$</span>matA[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>]         <span class="co"># here are the first three</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>Compadre<span class="sc">$</span>matA[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>] <span class="co"># here are the first three</span></span>
 <span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [[1]]</span></span>
 <span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      A1   A2   A3   A4</span></span>
 <span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; A1 0.61 0.38 0.30 1.16</span></span>
@@ -186,10 +194,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="manual-approach" class="section level4">
 <h4>Manual approach</h4>
 <p>We could do something like this…</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>Compadre<span class="sc">$</span>dim <span class="ot">&lt;-</span> <span class="fu">numeric</span>(<span class="fu">nrow</span>(Compadre))  <span class="co"># create empty vector to store output</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>Compadre<span class="sc">$</span>dim[<span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="fu">nrow</span>(Compadre<span class="sc">$</span>matA[[<span class="dv">1</span>]])  <span class="co"># nrow matrix 1</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>Compadre<span class="sc">$</span>dim[<span class="dv">2</span>] <span class="ot">&lt;-</span> <span class="fu">nrow</span>(Compadre<span class="sc">$</span>matA[[<span class="dv">2</span>]])  <span class="co"># nrow matrix 2</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>Compadre<span class="sc">$</span>dim[<span class="dv">3</span>] <span class="ot">&lt;-</span> <span class="fu">nrow</span>(Compadre<span class="sc">$</span>matA[[<span class="dv">3</span>]])  <span class="co"># nrow matrix 3</span></span>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>Compadre<span class="sc">$</span>dim <span class="ot">&lt;-</span> <span class="fu">numeric</span>(<span class="fu">nrow</span>(Compadre)) <span class="co"># create empty vector to store output</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>Compadre<span class="sc">$</span>dim[<span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="fu">nrow</span>(Compadre<span class="sc">$</span>matA[[<span class="dv">1</span>]]) <span class="co"># nrow matrix 1</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>Compadre<span class="sc">$</span>dim[<span class="dv">2</span>] <span class="ot">&lt;-</span> <span class="fu">nrow</span>(Compadre<span class="sc">$</span>matA[[<span class="dv">2</span>]]) <span class="co"># nrow matrix 2</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>Compadre<span class="sc">$</span>dim[<span class="dv">3</span>] <span class="ot">&lt;-</span> <span class="fu">nrow</span>(Compadre<span class="sc">$</span>matA[[<span class="dv">3</span>]]) <span class="co"># nrow matrix 3</span></span>
 <span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co"># ... all the way to 150</span></span></code></pre></div>
 <p>But that’s not very efficient for 150 matrices.</p>
 </div>
@@ -200,7 +208,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>Compadre<span class="sc">$</span>dim <span class="ot">&lt;-</span> <span class="fu">numeric</span>(<span class="fu">nrow</span>(Compadre))</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># loop through all rows of Compadre</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="fu">seq_len</span>(<span class="fu">nrow</span>(Compadre))) {</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_len</span>(<span class="fu">nrow</span>(Compadre))) {</span>
 <span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  Compadre<span class="sc">$</span>dim[i] <span class="ot">&lt;-</span> <span class="fu">nrow</span>(Compadre<span class="sc">$</span>matA[[i]])</span>
 <span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 </div>
@@ -247,7 +255,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 4 6 3 5 5 3</span></span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="fu">vapply</span>(CompUnnest<span class="sc">$</span>matA[<span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>], nrow, <span class="fu">numeric</span>(<span class="dv">1</span>)) <span class="co"># must specify output type</span></span>
 <span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 4 6 3 5 5 3</span></span></code></pre></div>
-<p><code>lapply()</code> always returns a list, so it’s useful if our output is more complex than a single value for each input. For example, we could use lapply to calculate vectors of stage-specific survival (column sums of matU).</p>
+<p><code>lapply()</code> always returns a <code>list</code>, so it’s useful if our output is more complex than a single value for each input. For example, we could use <code>lapply</code> to calculate vectors of stage-specific survival (column sums of <code>matU</code>).</p>
 <div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lapply</span>(CompUnnest<span class="sc">$</span>matU[<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>], <span class="cf">function</span>(m) <span class="fu">colSums</span>(m))</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [[1]]</span></span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   U1   U2   U3   U4 </span></span>
@@ -275,26 +283,28 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>CompUnnest<span class="sc">$</span>start_life <span class="ot">&lt;-</span> <span class="fu">mpm_first_active</span>(CompUnnest)</span>
 <span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a><span class="co"># vectorise lifeExpectancy over matU and start_life</span></span>
-<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="fu">mapply</span>(lifeExpectancy,             <span class="co"># function</span></span>
-<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>       CompUnnest<span class="sc">$</span>matU[<span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>],       <span class="co"># first argument to vectorise over</span></span>
-<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>       CompUnnest<span class="sc">$</span>start_life[<span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>]) <span class="co"># second argument to vectorise over</span></span>
-<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;        U1        U2        U1        U1        U1        U1 </span></span>
-<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  5.727060 22.194872  8.439966  3.009829 10.877215 18.181818</span></span></code></pre></div>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="fu">mapply</span>(</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>  lifeExpectancy, <span class="co"># function</span></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>  CompUnnest<span class="sc">$</span>matU[<span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>], <span class="co"># first argument to vectorise over</span></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>  CompUnnest<span class="sc">$</span>start_life[<span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>]</span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>) <span class="co"># second argument to vectorise over</span></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;        U1        U2        U1        U1        U1        U1 </span></span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  5.727060 22.194872  8.439966  3.009829 10.877215 18.181818</span></span></code></pre></div>
 </div>
 <div id="when-functions-fail" class="section level2">
 <h2>When functions fail</h2>
-<p>Just like loops, vectorisation fails if the function being vectorised throws an error on <em>any</em> element of the vector. Here’s an example. The <code>lambda()</code> function from <a href="https://CRAN.R-project.org/package=popbio">popbio</a> calculates the expected population growth rate given a projection matrix. It’ll work on most of the <strong>A</strong> matrices in <code>Compadre</code>, but fails on matrices that contain missing values (<code>NA</code>).</p>
+<p>Just like loops, vectorisation fails if the function being vectorised throws an error on <em>any</em> element of the vector. Here’s an example. The <code>eigs()</code> function from <a href="https://CRAN.R-project.org/package=popdemo">popdemo</a> calculates the expected population growth rate given a projection matrix. It’ll work on most of the <strong>A</strong> matrices in <code>Compadre</code>, but fails on matrices that contain missing values (<code>NA</code>).</p>
 <div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># works for a single matrix</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lambda</span>(CompUnnest<span class="sc">$</span>matA[[<span class="dv">1</span>]])</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>popdemo<span class="sc">::</span><span class="fu">eigs</span>(CompUnnest<span class="sc">$</span>matA[[<span class="dv">1</span>]], <span class="at">what =</span> <span class="st">&quot;lambda&quot;</span>)</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 1.058029</span></span>
 <span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="co"># but fails when applied to all matrices because a few have missing values</span></span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>CompUnnest<span class="sc">$</span>lambda <span class="ot">&lt;-</span> <span class="fu">sapply</span>(CompUnnest<span class="sc">$</span>matA, lambda)</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>CompUnnest<span class="sc">$</span>lambda <span class="ot">&lt;-</span> <span class="fu">sapply</span>(CompUnnest<span class="sc">$</span>matA, popdemo<span class="sc">::</span>eigs, <span class="at">what =</span> <span class="st">&quot;lambda&quot;</span>)</span>
 <span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Error in eigen(A): infinite or missing values in &#39;x&#39;</span></span></code></pre></div>
 <p>There are two basic approaches to overcoming this:</p>
 <div id="remove-or-skip-problem-elements" class="section level4">
 <h4>1. Remove or skip problem elements</h4>
-<p>If <code>lambda()</code> doesn’t work on matrices with missing values, one approach is to simply remove matrices with missing values. The <code>cdb_flag()</code> function is an easy way to check for missing values, and other common issues that might hinder our analyses.</p>
+<p>If <code>eigs()</code> doesn’t work on matrices with missing values, one approach is to simply remove matrices with missing values. The <code>cdb_flag()</code> function is an easy way to check for missing values, and other common issues that might hinder our analyses.</p>
 <div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># add column &#39;check_NA_A&#39;, indicating whether matA contains missing values (T/F)</span></span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>CompFlag <span class="ot">&lt;-</span> <span class="fu">cdb_flag</span>(CompUnnest, <span class="at">checks =</span> <span class="st">&quot;check_NA_A&quot;</span>)</span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -302,34 +312,42 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>CompSub <span class="ot">&lt;-</span> <span class="fu">subset</span>(CompFlag, check_NA_A <span class="sc">==</span> <span class="cn">FALSE</span>)</span>
 <span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="co"># apply lambda() to every remaining matA</span></span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>CompSub<span class="sc">$</span>lambda <span class="ot">&lt;-</span> <span class="fu">sapply</span>(CompSub<span class="sc">$</span>matA, lambda)</span></code></pre></div>
-<p>Alternatively, if we want to avoid subsetting, we could pre-define a placeholder column for the result, and then selectively apply the <code>lambda()</code> function to only those matrices that don’t contain missing values.</p>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>CompSub<span class="sc">$</span>lambda <span class="ot">&lt;-</span> <span class="fu">sapply</span>(<span class="fu">matA</span>(CompSub), popdemo<span class="sc">::</span>eigs, <span class="at">what =</span> <span class="st">&quot;lambda&quot;</span>)</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in FUN(X[[i]], ...): More than one eigenvalues have equal absolute</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; magnitude</span></span></code></pre></div>
+<p>Alternatively, if we want to avoid subsetting, we could pre-define a placeholder column for the result, and then selectively apply the <code>eigs()</code> function to only those matrices that don’t contain missing values.</p>
 <div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># identify rows with no missing values in matA</span></span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>no_missing <span class="ot">&lt;-</span> <span class="fu">which</span>(CompFlag<span class="sc">$</span>check_NA_A <span class="sc">==</span> <span class="cn">FALSE</span>)</span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="co"># create placeholder column for lambda</span></span>
 <span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>CompFlag<span class="sc">$</span>lambda <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
 <span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="co"># apply lambda() to all matA with no missing values</span></span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>CompFlag<span class="sc">$</span>lambda[no_missing] <span class="ot">&lt;-</span> <span class="fu">sapply</span>(CompFlag<span class="sc">$</span>matA[no_missing], lambda)</span></code></pre></div>
-<p>Rows where there were missing values in matA retain the original placeholder value of <code>NA</code>.</p>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="co"># apply eigs() to all matA with no missing values</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>CompFlag<span class="sc">$</span>lambda[no_missing] <span class="ot">&lt;-</span> <span class="fu">sapply</span>(CompFlag<span class="sc">$</span>matA[no_missing], popdemo<span class="sc">::</span>eigs, <span class="at">what =</span> <span class="st">&quot;lambda&quot;</span>)</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in FUN(X[[i]], ...): More than one eigenvalues have equal absolute</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; magnitude</span></span></code></pre></div>
+<p>Rows where there were missing values in <code>matA</code> retain the original placeholder value of <code>NA</code>.</p>
 </div>
 <div id="modify-the-function" class="section level4">
 <h4>2. Modify the function</h4>
-<p>A second approach is to modify the function we want to vectorise with so that it can natively handle special cases. For example, we might modify <code>lambda()</code> so that it returns <code>NA</code> if a matrix contains missing values.</p>
-<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>lambda2 <span class="ot">&lt;-</span> <span class="cf">function</span>(mat) {</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># check mat for missing values: if TRUE return NA, else return lambda(mat)</span></span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ifelse</span>(<span class="fu">any</span>(<span class="fu">is.na</span>(mat)), <span class="cn">NA</span>, <span class="fu">lambda</span>(mat))     </span>
+<p>A second approach is to modify the function we want to vectorise with so that it can natively handle special cases. For example, we might modify <code>eigs()</code> so that it returns <code>NA</code> if a matrix contains missing values.</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>lambdaFn1 <span class="ot">&lt;-</span> <span class="cf">function</span>(mat) {</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># check mat for missing values: if TRUE return NA, else return eigs(mat)</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ifelse</span>(<span class="fu">any</span>(<span class="fu">is.na</span>(mat)), <span class="cn">NA</span>, popdemo<span class="sc">::</span><span class="fu">eigs</span>(mat, <span class="at">what =</span> <span class="st">&quot;lambda&quot;</span>))</span>
 <span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>CompUnnest<span class="sc">$</span>lambda <span class="ot">&lt;-</span> <span class="fu">sapply</span>(CompUnnest<span class="sc">$</span>matA, lambda2)</span></code></pre></div>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>CompUnnest<span class="sc">$</span>lambda <span class="ot">&lt;-</span> <span class="fu">sapply</span>(CompUnnest<span class="sc">$</span>matA, lambdaFn1)</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in popdemo::eigs(mat, what = &quot;lambda&quot;): More than one eigenvalues have</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; equal absolute magnitude</span></span></code></pre></div>
 <p>If the special cases are harder to test for, we could use R’s condition-handling functions like <code>try()</code> or <code>tryCatch()</code>. Here’s an example.</p>
-<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>lambda3 <span class="ot">&lt;-</span> <span class="cf">function</span>(mat) {</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># try lambda(mat): if error return NA</span></span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tryCatch</span>(<span class="fu">lambda</span>(mat), <span class="at">error =</span> <span class="cf">function</span>(err) <span class="cn">NA</span>)</span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>} </span>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>lambdaFn2 <span class="ot">&lt;-</span> <span class="cf">function</span>(mat) {</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># try eigs(mat): if error return NA</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tryCatch</span>(<span class="fu">eigs</span>(mat, <span class="at">what =</span> <span class="st">&quot;lambda&quot;</span>), <span class="at">error =</span> <span class="cf">function</span>(err) <span class="cn">NA</span>)</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>CompUnnest<span class="sc">$</span>lambda <span class="ot">&lt;-</span> <span class="fu">sapply</span>(CompUnnest<span class="sc">$</span>matA, lambda3)</span></code></pre></div>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>CompUnnest<span class="sc">$</span>lambda <span class="ot">&lt;-</span> <span class="fu">sapply</span>(CompUnnest<span class="sc">$</span>matA, lambdaFn2)</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in eigs(mat, what = &quot;lambda&quot;): More than one eigenvalues have equal</span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; absolute magnitude</span></span></code></pre></div>
 <p>This latter approach requires caution, as we’ll get an <code>NA</code> for <em>any</em> error. Some errors might reflect problems with our data or code that are fixable, in which case an <code>NA</code> may be misleading.</p>
 </div>
 </div>

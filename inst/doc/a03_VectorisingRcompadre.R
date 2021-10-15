@@ -5,28 +5,28 @@ knitr::opts_chunk$set(
 )
 
 ## ----setupDarwin, include=FALSE, eval = Sys.info()[["sysname"]] == "Darwin"----
-#The following line seems to be required by pkgdown::build_site() on my machine, but causes build to break with R-CMD-CHECK on GH
+# The following line seems to be required by pkgdown::build_site() on my machine, but causes build to break with R-CMD-CHECK on GH
 knitr::opts_chunk$set(dev = "png", dev.args = list(type = "cairo-png"))
 
 ## -----------------------------------------------------------------------------
 library(Rcompadre)
-library(popbio)
+library(popdemo)
 data(Compadre)
 
 ## -----------------------------------------------------------------------------
 Compadre$matA <- matA(Compadre)
 
 ## -----------------------------------------------------------------------------
-is.vector(Compadre$matA)   # it really is a vector
-is.list(Compadre$matA)     # and also a list
-length(Compadre$matA)      # with 150 matrices
-Compadre$matA[1:3]         # here are the first three
+is.vector(Compadre$matA) # it really is a vector
+is.list(Compadre$matA) # and also a list
+length(Compadre$matA) # with 150 matrices
+Compadre$matA[1:3] # here are the first three
 
 ## -----------------------------------------------------------------------------
-Compadre$dim <- numeric(nrow(Compadre))  # create empty vector to store output
-Compadre$dim[1] <- nrow(Compadre$matA[[1]])  # nrow matrix 1
-Compadre$dim[2] <- nrow(Compadre$matA[[2]])  # nrow matrix 2
-Compadre$dim[3] <- nrow(Compadre$matA[[3]])  # nrow matrix 3
+Compadre$dim <- numeric(nrow(Compadre)) # create empty vector to store output
+Compadre$dim[1] <- nrow(Compadre$matA[[1]]) # nrow matrix 1
+Compadre$dim[2] <- nrow(Compadre$matA[[2]]) # nrow matrix 2
+Compadre$dim[3] <- nrow(Compadre$matA[[3]]) # nrow matrix 3
 # ... all the way to 150
 
 ## -----------------------------------------------------------------------------
@@ -34,7 +34,7 @@ Compadre$dim[3] <- nrow(Compadre$matA[[3]])  # nrow matrix 3
 Compadre$dim <- numeric(nrow(Compadre))
 
 # loop through all rows of Compadre
-for(i in seq_len(nrow(Compadre))) {
+for (i in seq_len(nrow(Compadre))) {
   Compadre$dim[i] <- nrow(Compadre$matA[[i]])
 }
 
@@ -84,16 +84,18 @@ lifeExpectancy <- function(matU, startLife) {
 CompUnnest$start_life <- mpm_first_active(CompUnnest)
 
 # vectorise lifeExpectancy over matU and start_life
-mapply(lifeExpectancy,             # function
-       CompUnnest$matU[1:6],       # first argument to vectorise over
-       CompUnnest$start_life[1:6]) # second argument to vectorise over
+mapply(
+  lifeExpectancy, # function
+  CompUnnest$matU[1:6], # first argument to vectorise over
+  CompUnnest$start_life[1:6]
+) # second argument to vectorise over
 
 ## ----error=TRUE---------------------------------------------------------------
 # works for a single matrix
-lambda(CompUnnest$matA[[1]])
+popdemo::eigs(CompUnnest$matA[[1]], what = "lambda")
 
 # but fails when applied to all matrices because a few have missing values
-CompUnnest$lambda <- sapply(CompUnnest$matA, lambda)
+CompUnnest$lambda <- sapply(CompUnnest$matA, popdemo::eigs, what = "lambda")
 
 ## -----------------------------------------------------------------------------
 # add column 'check_NA_A', indicating whether matA contains missing values (T/F)
@@ -103,7 +105,7 @@ CompFlag <- cdb_flag(CompUnnest, checks = "check_NA_A")
 CompSub <- subset(CompFlag, check_NA_A == FALSE)
 
 # apply lambda() to every remaining matA
-CompSub$lambda <- sapply(CompSub$matA, lambda)
+CompSub$lambda <- sapply(matA(CompSub), popdemo::eigs, what = "lambda")
 
 ## -----------------------------------------------------------------------------
 # identify rows with no missing values in matA
@@ -112,22 +114,22 @@ no_missing <- which(CompFlag$check_NA_A == FALSE)
 # create placeholder column for lambda
 CompFlag$lambda <- NA
 
-# apply lambda() to all matA with no missing values
-CompFlag$lambda[no_missing] <- sapply(CompFlag$matA[no_missing], lambda)
+# apply eigs() to all matA with no missing values
+CompFlag$lambda[no_missing] <- sapply(CompFlag$matA[no_missing], popdemo::eigs, what = "lambda")
 
 ## -----------------------------------------------------------------------------
-lambda2 <- function(mat) {
-  # check mat for missing values: if TRUE return NA, else return lambda(mat)
-  ifelse(any(is.na(mat)), NA, lambda(mat))     
+lambdaFn1 <- function(mat) {
+  # check mat for missing values: if TRUE return NA, else return eigs(mat)
+  ifelse(any(is.na(mat)), NA, popdemo::eigs(mat, what = "lambda"))
 }
 
-CompUnnest$lambda <- sapply(CompUnnest$matA, lambda2)
+CompUnnest$lambda <- sapply(CompUnnest$matA, lambdaFn1)
 
 ## -----------------------------------------------------------------------------
-lambda3 <- function(mat) {
-  # try lambda(mat): if error return NA
-  tryCatch(lambda(mat), error = function(err) NA)
-} 
+lambdaFn2 <- function(mat) {
+  # try eigs(mat): if error return NA
+  tryCatch(eigs(mat, what = "lambda"), error = function(err) NA)
+}
 
-CompUnnest$lambda <- sapply(CompUnnest$matA, lambda3)
+CompUnnest$lambda <- sapply(CompUnnest$matA, lambdaFn2)
 

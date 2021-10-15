@@ -1,7 +1,7 @@
 Package: Rcompadre
 Type: Package
 Title: Utilities for using the 'COM(P)ADRE' Matrix Model Database
-Version: 1.0.0
+Version: 1.1.0
 Authors@R: c(
     person(given = "Patrick", 
            family = "Barks",
@@ -58,25 +58,26 @@ URL: https://github.com/jonesor/Rcompadre
 BugReports: https://github.com/jonesor/Rcompadre/issues
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1
 Depends: R (>= 2.10)
 Imports: methods, popdemo, tibble
-Suggests: spelling, knitr, rmarkdown, testthat, popbio, ggplot2, maps,
-        dplyr, ggtern, covr, rcrossref
+Suggests: covr, dplyr, ggplot2, knitr, maps, rcrossref, rmarkdown,
+        spelling, testthat
 VignetteBuilder: knitr
 Collate: 'CompadreDB.R' 'CompadreDB-Methods.R'
         'CompadreDB-Subsetting.R' 'CompadreDB-Tidyverse.R'
         'CompadreMat.R' 'ClassUnionMethods.R' 'cdb_check_species.R'
-        'cdb_collapse.R' 'cdb_compare.R' 'cdb_fetch.R' 'cdb_flag.R'
-        'cdb_flatten.R' 'cdb_id.R' 'cdb_id_stages.R' 'cdb_id_studies.R'
-        'cdb_mean_matF.R' 'cdb_metadata.R' 'cdb_rbind.R'
-        'cdb_unflatten.R' 'cdb_unnest.R' 'data.R' 'mpm_mean.R'
-        'mpm_methods.R' 'string_representation.R' 'zzz.R'
+        'cdb_build_cdb.R' 'cdb_collapse.R' 'cdb_compare.R'
+        'cdb_fetch.R' 'cdb_flag.R' 'cdb_flatten.R' 'cdb_id.R'
+        'cdb_id_stages.R' 'cdb_id_studies.R' 'cdb_mean_matF.R'
+        'cdb_metadata.R' 'cdb_rbind.R' 'cdb_unflatten.R' 'cdb_unnest.R'
+        'data.R' 'mpm_mean.R' 'mpm_methods.R' 'string_representation.R'
+        'zzz.R'
 Language: en-GB
 Config/testthat/parallel: true
 Config/testthat/edition: 3
 NeedsCompilation: no
-Packaged: 2021-04-29 21:55:05 UTC; jones
+Packaged: 2021-10-15 18:51:59 UTC; jones
 Author: Patrick Barks [aut] (<https://orcid.org/0000-0002-5947-8151>),
   Danny Buss [aut],
   Roberto Salguero-Gomez [aut] (<https://orcid.org/0000-0002-6085-4433>),
@@ -89,4 +90,4 @@ Author: Patrick Barks [aut] (<https://orcid.org/0000-0002-5947-8151>),
   Sam Levin [aut] (<https://orcid.org/0000-0002-3289-9925>)
 Maintainer: Owen Jones <jones@biology.sdu.dk>
 Repository: CRAN
-Date/Publication: 2021-04-30 12:40:02 UTC
+Date/Publication: 2021-10-15 19:30:02 UTC

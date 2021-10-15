@@ -12,7 +12,7 @@
 
 <meta name="author" content="Owen Jones" />
 
-<meta name="date" content="2021-04-29" />
+<meta name="date" content="2021-10-15" />
 
 <title>Obtaining references</title>
 
@@ -28,11 +28,19 @@
     </style>
 
 
-<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
 <style type="text/css" data-origin="pandoc">
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
 div.sourceCode { margin: 1em 0; }
 pre.sourceCode { margin: 0; }
@@ -133,7 +141,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <h1 class="title toc-ignore">Obtaining references</h1>
 <h4 class="author">Owen Jones</h4>
-<h4 class="date">2021-04-29</h4>
+<h4 class="date">2021-10-15</h4>
 
 
 
@@ -148,27 +156,45 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(Comadre)</span></code></pre></div>
 <p>Here we will create a subset of matrices containing data for species in the <em>Ursidae</em> family:</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>Comadre <span class="ot">&lt;-</span> <span class="fu">subset</span>(Comadre, Family <span class="sc">==</span> <span class="st">&quot;Ursidae&quot;</span>)</span></code></pre></div>
-<p>In this case, our subset contains 3 matrices, and we can examine the source information for these by asking for the <code>Authors</code>, <code>Journal</code>, publication year (<code>YearPublication</code>) and DOI (<code>DOI.ISBN</code>) like this:</p>
+<p>In this case, our subset contains 3 matrices, and we can examine the source information for these by asking for the <code>Authors</code>, <code>Journal</code>, publication year (<code>YearPublication</code>) and DOI (<code>DOI_ISBN</code>) like this:</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>Comadre<span class="sc">$</span>Authors</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;Hunter; Caswell; Runge; Regehr; Amstrup; Stirling&quot;</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [2] &quot;Carroll; Noss; Paquet; Schumaker&quot;                 </span></span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [3] &quot;Wielgus&quot;</span></span>
 <span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>Comadre<span class="sc">$</span>YearPublication</span>
 <span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;2010&quot; &quot;2003&quot; &quot;2002&quot;</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>Comadre<span class="sc">$</span>DOI.ISBN</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>Comadre<span class="sc">$</span>DOI_ISBN</span>
 <span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;10.1890/09-1641&quot;               &quot;10.1890/02-5195&quot;              </span></span>
 <span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [3] &quot;10.1016/S0006-3207(01)00265-8&quot;</span></span></code></pre></div>
-<p>We are now ready to obtain the full references for these data. The <code>rcrossref</code> package has a convenient function, <code>cr_cn</code> which obtains citations in various formats from CrossRef based on the DOIs.</p>
+<p>We are now ready to obtain the full references for these data. The <code>rcrossref</code> package has a convenient function, <code>cr_cn()</code> which obtains citations in various formats from CrossRef based on the DOIs.</p>
 <p>Thus, we can obtain the full references for this subset of the COMADRE database like this:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>rcrossref<span class="sc">::</span><span class="fu">cr_cn</span>(<span class="fu">unique</span>(Comadre<span class="sc">$</span>DOI.ISBN),<span class="at">format =</span> <span class="st">&quot;text&quot;</span>,<span class="at">style =</span> <span class="st">&quot;apa&quot;</span>)</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [[1]]</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;Hunter, C. M., Caswell, H., Runge, M. C., Regehr, E. V., Amstrup, S. C., &amp; Stirling, I. (2010). Climate change threatens polar bear populations: a stochastic demographic analysis. Ecology, 91(10), 2883–2897. doi:10.1890/09-1641.1&quot;</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [[2]]</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;Carroll, C., Noss, R. F., Paquet, P. C., &amp; Schumaker, N. H. (2003). USE OF POPULATION VIABILITY ANALYSIS AND RESERVE SELECTION ALGORITHMS IN REGIONAL CONSERVATION PLANS. Ecological Applications, 13(6), 1773–1789. doi:10.1890/02-5195&quot;</span></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [[3]]</span></span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;Wielgus, R. B. (2002). Minimum viable population and reserve sizes for naturally regulated grizzly bears in British Columbia. Biological Conservation, 106(3), 381–388. doi:10.1016/s0006-3207(01)00265-8&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>rcrossref<span class="sc">::</span><span class="fu">cr_cn</span>(<span class="fu">unique</span>(Comadre<span class="sc">$</span>DOI_ISBN),<span class="at">format =</span> <span class="st">&quot;text&quot;</span>,<span class="at">style =</span> <span class="st">&quot;apa&quot;</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning: Failure in resolving &#39;10.1890/09-1641&#39;. See error detail in results.</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning: Failure in resolving &#39;10.1890/02-5195&#39;. See error detail in results.</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning: Failure in resolving &#39;10.1016/S0006-3207(01)00265-8&#39;. See error detail</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; in results.</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [[1]]</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [[1]]$doi</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;10.1890/09-1641&quot;</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [[1]]$error</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;Error in cr_GET(endpoint = sprintf(\&quot;works/%s/agency\&quot;, x), args = list(),  : \n  res$response_headers$`content-type` == \&quot;application/json;charset=UTF-8\&quot; is not TRUE\n&quot;</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [[2]]</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [[2]]$doi</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;10.1890/02-5195&quot;</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [[2]]$error</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;Error in cr_GET(endpoint = sprintf(\&quot;works/%s/agency\&quot;, x), args = list(),  : \n  res$response_headers$`content-type` == \&quot;application/json;charset=UTF-8\&quot; is not TRUE\n&quot;</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [[3]]</span></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [[3]]$doi</span></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;10.1016/S0006-3207(01)00265-8&quot;</span></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [[3]]$error</span></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;Error in cr_GET(endpoint = sprintf(\&quot;works/%s/agency\&quot;, x), args = list(),  : \n  res$response_headers$`content-type` == \&quot;application/json;charset=UTF-8\&quot; is not TRUE\n&quot;</span></span></code></pre></div>
 <p>Various other formats and styles of output are available, see <code>?rcrossref::cr_cn</code> for details.</p>
 
 

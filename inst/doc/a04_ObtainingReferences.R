@@ -24,8 +24,8 @@ Comadre <- subset(Comadre, Family == "Ursidae")
 ## -----------------------------------------------------------------------------
 Comadre$Authors
 Comadre$YearPublication
-Comadre$DOI.ISBN
+Comadre$DOI_ISBN
 
 ## -----------------------------------------------------------------------------
-rcrossref::cr_cn(unique(Comadre$DOI.ISBN),format = "text",style = "apa")
+rcrossref::cr_cn(unique(Comadre$DOI_ISBN),format = "text",style = "apa")
 

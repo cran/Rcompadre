@@ -12,8 +12,8 @@ knitr::opts_chunk$set(dev = "png", dev.args = list(type = "cairo-png"))
 library(Rcompadre)
 library(dplyr)
 library(ggplot2)
+library(popdemo)
 library(maps)     # for plotting world map
-library(popbio)   # for calculating population growth rates
 
 ## ----results=FALSE------------------------------------------------------------
 y <- c(0.2, 4.1, 3.7)
@@ -31,11 +31,11 @@ y %>% data.frame(col1 = x, col2 = .) # use dot to pass object to second argument
 
 ## ----eval=FALSE---------------------------------------------------------------
 #  # approach 1 (nested functions)
-#  compadre_use <- subset(cdb_flag(Compadre), check_NA_A == FALSE)
+#  compadre_use <- filter(cdb_flag(Compadre), check_NA_A == FALSE)
 #  
 #  # approach 2 (intermediate step)
 #  compadre_flag <- cdb_flag(Compadre)
-#  compadre_use <- subset(compadre_flag, check_NA_A == FALSE)
+#  compadre_use <- filter(compadre_flag, check_NA_A == FALSE)
 
 ## -----------------------------------------------------------------------------
 compadre_use <- Compadre %>% 
@@ -44,13 +44,13 @@ compadre_use <- Compadre %>%
 
 ## ---- warning=FALSE-----------------------------------------------------------
 compadre_euro <- Compadre %>%
-  subset(Continent == "Europe") %>% 
+  filter(Continent == "Europe") %>% 
   mutate(Nordic = Country %in% c("NOR", "SWE", "DNK", "ISL", "FIN"))
 
 ## -----------------------------------------------------------------------------
 compadre_use <- Compadre %>% 
   mutate(has_active = mpm_has_active(.)) %>% 
-  subset(has_active == TRUE) %>% 
+  filter(has_active == TRUE) %>% 
   mutate(StudyID = cdb_id_studies(.))
 
 ## -----------------------------------------------------------------------------
@@ -61,9 +61,9 @@ compadre_unnest <- Compadre %>%
 ## -----------------------------------------------------------------------------
 compadre_lambda <- Compadre %>% 
   cdb_flag() %>% 
-  subset(check_NA_A == FALSE) %>%      # remove matrices with missing values
+  filter(check_NA_A == FALSE) %>%      # remove matrices with missing values
   mutate(mat_A = matA(.)) %>%          # extract list-column of matA
-  mutate(lam = sapply(mat_A, lambda))  # apply lambda() to every matA
+  mutate(lam = sapply(mat_A, popdemo::eigs, what = "lambda"))  # get lambda for every matA
 
 ## -----------------------------------------------------------------------------
 compadre_stage_surv <- Compadre %>% 
@@ -103,7 +103,7 @@ singleRepresentativeSpecies <- Compadre %>%
   slice(sample(1))
 
 ## ----warning=FALSE, fig.width = 6, fig.height = 4-----------------------------
-ggplot(Compadre, aes(Lon, Lat)) +
+ggplot2::ggplot(Compadre, aes(Lon, Lat)) +
   borders(database = "world", fill = "grey80", col = NA) +
   geom_point(col = "steelblue", size = 1.8, alpha = 0.8)
 
@@ -118,7 +118,7 @@ compadre_life_expect <- Compadre %>%
   filter(MatrixComposite != "Seasonal", # filter is the dplyr version of subset
          MatrixTreatment == "Unmanipulated",
          MatrixCaptivity == "W",
-         AnnualPeriodicity == "1") %>% 
+         ProjectionInterval == "1") %>% 
   mutate(StageID = cdb_id_stages(.)) %>%
   cdb_collapse(columns = "StageID") %>%
   cdb_flag() %>% 
@@ -130,7 +130,7 @@ compadre_life_expect <- Compadre %>%
   filter(life_expectancy >= 1) %>% 
   mutate(OrganismType = reorder(OrganismType, life_expectancy, median))
 
-ggplot(compadre_life_expect, aes(OrganismType, life_expectancy)) +
+ggplot2::ggplot(compadre_life_expect, aes(OrganismType, life_expectancy)) +
   geom_boxplot() +
   scale_y_log10() +
   coord_flip() +
