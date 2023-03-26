@@ -31,7 +31,7 @@ VersionData(Compadre)
 ## ----Names--------------------------------------------------------------------
 names(Compadre)
 
-## ----Tables and Histograms----------------------------------------------------
+## ----Tables_and_Histograms----------------------------------------------------
 table(Compadre$DicotMonoc)
 hist(Compadre$StudyDuration,main = "StudyDuration")
 plot(Compadre$Lon,Compadre$Lat,main = "Location")
@@ -77,7 +77,7 @@ Compadre_flagged <- cdb_flag(Compadre)
 ## ----subset flagged-----------------------------------------------------------
 x <- subset(Compadre_flagged, check_NA_A == FALSE & check_ergodic == TRUE)
 
-## ----matrix calculations------------------------------------------------------
+## ----matrix_calculations------------------------------------------------------
 lambdaVals <- sapply(matA(x), popdemo::eigs, what="lambda")
 summary(lambdaVals)
 hist(lambdaVals, main = "Lambda values")
