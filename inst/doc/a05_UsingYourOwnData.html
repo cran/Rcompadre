@@ -12,7 +12,7 @@
 
 <meta name="author" content="Owen Jones" />
 
-<meta name="date" content="2023-03-25" />
+<meta name="date" content="2023-09-02" />
 
 <title>Using your own matrix data</title>
 
@@ -340,7 +340,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 <h1 class="title toc-ignore">Using your own matrix data</h1>
 <h4 class="author">Owen Jones</h4>
-<h4 class="date">2023-03-25</h4>
+<h4 class="date">2023-09-02</h4>
 
 
 
@@ -443,8 +443,8 @@ combines them into a single <code>CompadreDB</code> object.</p>
 <h1>A simple example</h1>
 <p>First we need to load the library, and the <code>dplyr</code>
 package.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(Rcompadre)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(Rcompadre)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code></pre></div>
 <p>In this example we generate a series of 2 dimension <em>A</em>
 matrices using a series of uniform distributions for the <em>U</em>
 submatrix, and a gamma distribution, to approximate the average of a
@@ -453,89 +453,88 @@ but it is not necessary for dimension to be the same. This is a bit
 long-winded, and there are certainly better ways to simulate these data
 (e.g. using a Dirichlet distribution), but the example serves a useful
 purpose here.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>nMat <span class="ot">&lt;-</span> <span class="dv">20</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>mort1 <span class="ot">&lt;-</span> <span class="fu">runif</span>(nMat, <span class="dv">0</span>, <span class="dv">1</span>)</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>u1 <span class="ot">&lt;-</span> <span class="fu">runif</span>(nMat, <span class="dv">0</span>, <span class="dv">1</span> <span class="sc">-</span> mort1)</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>u2 <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">-</span> mort1 <span class="sc">-</span> u1</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>mort2 <span class="ot">&lt;-</span> <span class="fu">runif</span>(nMat, <span class="dv">0</span>, <span class="dv">1</span>)</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>u3 <span class="ot">&lt;-</span> <span class="fu">runif</span>(nMat, <span class="dv">0</span>, <span class="dv">1</span> <span class="sc">-</span> mort2)</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>u4 <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">-</span> mort2 <span class="sc">-</span> u3</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>Uvals <span class="ot">&lt;-</span> <span class="fu">cbind</span>(u1, u2, u3, u4)</span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>Fvals <span class="ot">&lt;-</span> <span class="fu">rgamma</span>(nMat, <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="at">each =</span> <span class="dv">5</span>))</span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>Avals <span class="ot">&lt;-</span> Uvals</span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>Avals[, <span class="dv">3</span>] <span class="ot">&lt;-</span> Avals[, <span class="dv">3</span>] <span class="sc">+</span> Fvals</span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>Alist <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="fu">as.list</span>(<span class="fu">as.data.frame</span>(<span class="fu">t</span>(Avals))), matrix,</span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">byrow =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">nrow =</span> <span class="dv">2</span>, <span class="at">ncol =</span> <span class="dv">2</span></span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>nMat <span class="ot">&lt;-</span> <span class="dv">20</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>mort1 <span class="ot">&lt;-</span> <span class="fu">runif</span>(nMat, <span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>u1 <span class="ot">&lt;-</span> <span class="fu">runif</span>(nMat, <span class="dv">0</span>, <span class="dv">1</span> <span class="sc">-</span> mort1)</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>u2 <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">-</span> mort1 <span class="sc">-</span> u1</span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>mort2 <span class="ot">&lt;-</span> <span class="fu">runif</span>(nMat, <span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>u3 <span class="ot">&lt;-</span> <span class="fu">runif</span>(nMat, <span class="dv">0</span>, <span class="dv">1</span> <span class="sc">-</span> mort2)</span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>u4 <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">-</span> mort2 <span class="sc">-</span> u3</span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a>Uvals <span class="ot">&lt;-</span> <span class="fu">cbind</span>(u1, u2, u3, u4)</span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a>Fvals <span class="ot">&lt;-</span> <span class="fu">rgamma</span>(nMat, <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="at">each =</span> <span class="dv">5</span>))</span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a>Avals <span class="ot">&lt;-</span> Uvals</span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a>Avals[, <span class="dv">3</span>] <span class="ot">&lt;-</span> Avals[, <span class="dv">3</span>] <span class="sc">+</span> Fvals</span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a></span>
+<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a>Alist <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="fu">as.list</span>(<span class="fu">as.data.frame</span>(<span class="fu">t</span>(Avals))), matrix,</span>
+<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a>  <span class="at">byrow =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a>  <span class="at">nrow =</span> <span class="dv">2</span>, <span class="at">ncol =</span> <span class="dv">2</span></span>
+<span id="cb2-17"><a href="#cb2-17" tabindex="-1"></a>)</span></code></pre></div>
 <p>Next we use <code>cdb_build_cdb()</code> to convert this list of
 matrices into a COMPADRE object. Here I am adding an identifier to each
 matrix, and a column for the shape parameter for the Gamma distribution
 used to simulate the data.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>meta <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">idNum =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>, <span class="at">shapeParam =</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="at">each =</span> <span class="dv">5</span>))</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">cdb_build_cdb</span>(<span class="at">mat_a =</span> Alist, <span class="at">metadata =</span> meta)</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in cdb_build_cdb(mat_a = Alist, metadata = meta): Metadata does not</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; include a `SpeciesAccepted` column, so number of species not provided when</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; viewing object.</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>x</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; A COM(P)ADRE database (&#39;CompadreDB&#39;) object with ?? SPECIES and 20 MATRICES.</span></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 20 × 3</span></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    mat        idNum shapeParam</span></span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    &lt;list&gt;     &lt;int&gt;      &lt;int&gt;</span></span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  1 &lt;CompdrMt&gt;     1          1</span></span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  2 &lt;CompdrMt&gt;     2          1</span></span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  3 &lt;CompdrMt&gt;     3          1</span></span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  4 &lt;CompdrMt&gt;     4          1</span></span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  5 &lt;CompdrMt&gt;     5          1</span></span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  6 &lt;CompdrMt&gt;     6          2</span></span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  7 &lt;CompdrMt&gt;     7          2</span></span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  8 &lt;CompdrMt&gt;     8          2</span></span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  9 &lt;CompdrMt&gt;     9          2</span></span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 10 &lt;CompdrMt&gt;    10          2</span></span>
-<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 11 &lt;CompdrMt&gt;    11          3</span></span>
-<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 12 &lt;CompdrMt&gt;    12          3</span></span>
-<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 13 &lt;CompdrMt&gt;    13          3</span></span>
-<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 14 &lt;CompdrMt&gt;    14          3</span></span>
-<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 15 &lt;CompdrMt&gt;    15          3</span></span>
-<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 16 &lt;CompdrMt&gt;    16          4</span></span>
-<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 17 &lt;CompdrMt&gt;    17          4</span></span>
-<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 18 &lt;CompdrMt&gt;    18          4</span></span>
-<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 19 &lt;CompdrMt&gt;    19          4</span></span>
-<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 20 &lt;CompdrMt&gt;    20          4</span></span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>meta <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">idNum =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>, <span class="at">shapeParam =</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="at">each =</span> <span class="dv">5</span>))</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">cdb_build_cdb</span>(<span class="at">mat_a =</span> Alist, <span class="at">metadata =</span> meta)</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="co">#&gt; Warning in cdb_build_cdb(mat_a = Alist, metadata = meta): Metadata does not include a `SpeciesAccepted` column, so number</span></span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="co">#&gt;               of species not provided when viewing object.</span></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>x</span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a><span class="co">#&gt; A COM(P)ADRE database (&#39;CompadreDB&#39;) object with ?? SPECIES and 20 MATRICES.</span></span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a><span class="co">#&gt; # A tibble: 20 × 3</span></span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a><span class="co">#&gt;    mat        idNum shapeParam</span></span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a><span class="co">#&gt;    &lt;list&gt;     &lt;int&gt;      &lt;int&gt;</span></span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a><span class="co">#&gt;  1 &lt;CompdrMt&gt;     1          1</span></span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a><span class="co">#&gt;  2 &lt;CompdrMt&gt;     2          1</span></span>
+<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a><span class="co">#&gt;  3 &lt;CompdrMt&gt;     3          1</span></span>
+<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a><span class="co">#&gt;  4 &lt;CompdrMt&gt;     4          1</span></span>
+<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a><span class="co">#&gt;  5 &lt;CompdrMt&gt;     5          1</span></span>
+<span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a><span class="co">#&gt;  6 &lt;CompdrMt&gt;     6          2</span></span>
+<span id="cb3-18"><a href="#cb3-18" tabindex="-1"></a><span class="co">#&gt;  7 &lt;CompdrMt&gt;     7          2</span></span>
+<span id="cb3-19"><a href="#cb3-19" tabindex="-1"></a><span class="co">#&gt;  8 &lt;CompdrMt&gt;     8          2</span></span>
+<span id="cb3-20"><a href="#cb3-20" tabindex="-1"></a><span class="co">#&gt;  9 &lt;CompdrMt&gt;     9          2</span></span>
+<span id="cb3-21"><a href="#cb3-21" tabindex="-1"></a><span class="co">#&gt; 10 &lt;CompdrMt&gt;    10          2</span></span>
+<span id="cb3-22"><a href="#cb3-22" tabindex="-1"></a><span class="co">#&gt; 11 &lt;CompdrMt&gt;    11          3</span></span>
+<span id="cb3-23"><a href="#cb3-23" tabindex="-1"></a><span class="co">#&gt; 12 &lt;CompdrMt&gt;    12          3</span></span>
+<span id="cb3-24"><a href="#cb3-24" tabindex="-1"></a><span class="co">#&gt; 13 &lt;CompdrMt&gt;    13          3</span></span>
+<span id="cb3-25"><a href="#cb3-25" tabindex="-1"></a><span class="co">#&gt; 14 &lt;CompdrMt&gt;    14          3</span></span>
+<span id="cb3-26"><a href="#cb3-26" tabindex="-1"></a><span class="co">#&gt; 15 &lt;CompdrMt&gt;    15          3</span></span>
+<span id="cb3-27"><a href="#cb3-27" tabindex="-1"></a><span class="co">#&gt; 16 &lt;CompdrMt&gt;    16          4</span></span>
+<span id="cb3-28"><a href="#cb3-28" tabindex="-1"></a><span class="co">#&gt; 17 &lt;CompdrMt&gt;    17          4</span></span>
+<span id="cb3-29"><a href="#cb3-29" tabindex="-1"></a><span class="co">#&gt; 18 &lt;CompdrMt&gt;    18          4</span></span>
+<span id="cb3-30"><a href="#cb3-30" tabindex="-1"></a><span class="co">#&gt; 19 &lt;CompdrMt&gt;    19          4</span></span>
+<span id="cb3-31"><a href="#cb3-31" tabindex="-1"></a><span class="co">#&gt; 20 &lt;CompdrMt&gt;    20          4</span></span></code></pre></div>
 <p>We can look at the matrices using the normal <code>Rcompadre</code>
 function <code>matA()</code>.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">matA</span>(x)[<span class="dv">1</span>]</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [[1]]</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;             [,1]       [,2]</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1,] 0.004004891 0.20801142</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [2,] 0.003241067 0.01017981</span></span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">matA</span>(x)[<span class="dv">1</span>]</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="co">#&gt; [[1]]</span></span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="co">#&gt;           [,1]      [,2]</span></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="co">#&gt; [1,] 0.3953284 0.7762970</span></span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a><span class="co">#&gt; [2,] 0.3838474 0.3707436</span></span></code></pre></div>
 <p>Now the matrices are stored in a <code>CompadreDB</code> object they
 can be manipulated in the same diverse ways as the
 <code>CompadreDB</code> object downloaded from the COMPADRE/COMADRE
 database.</p>
 <p>For example, filtering based on part of the metadata, in this case,
 <code>shapeParam</code>.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>x <span class="sc">%&gt;%</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(shapeParam <span class="sc">&gt;</span> <span class="dv">2</span>)</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; A COM(P)ADRE database (&#39;CompadreDB&#39;) object with ?? SPECIES and 10 MATRICES.</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 10 × 3</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    mat        idNum shapeParam</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    &lt;list&gt;     &lt;int&gt;      &lt;int&gt;</span></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  1 &lt;CompdrMt&gt;    11          3</span></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  2 &lt;CompdrMt&gt;    12          3</span></span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  3 &lt;CompdrMt&gt;    13          3</span></span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  4 &lt;CompdrMt&gt;    14          3</span></span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  5 &lt;CompdrMt&gt;    15          3</span></span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  6 &lt;CompdrMt&gt;    16          4</span></span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  7 &lt;CompdrMt&gt;    17          4</span></span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  8 &lt;CompdrMt&gt;    18          4</span></span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  9 &lt;CompdrMt&gt;    19          4</span></span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 10 &lt;CompdrMt&gt;    20          4</span></span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>x <span class="sc">%&gt;%</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>  <span class="fu">filter</span>(shapeParam <span class="sc">&gt;</span> <span class="dv">2</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a><span class="co">#&gt; A COM(P)ADRE database (&#39;CompadreDB&#39;) object with ?? SPECIES and 10 MATRICES.</span></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a><span class="co">#&gt; # A tibble: 10 × 3</span></span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a><span class="co">#&gt;    mat        idNum shapeParam</span></span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a><span class="co">#&gt;    &lt;list&gt;     &lt;int&gt;      &lt;int&gt;</span></span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a><span class="co">#&gt;  1 &lt;CompdrMt&gt;    11          3</span></span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a><span class="co">#&gt;  2 &lt;CompdrMt&gt;    12          3</span></span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a><span class="co">#&gt;  3 &lt;CompdrMt&gt;    13          3</span></span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a><span class="co">#&gt;  4 &lt;CompdrMt&gt;    14          3</span></span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a><span class="co">#&gt;  5 &lt;CompdrMt&gt;    15          3</span></span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a><span class="co">#&gt;  6 &lt;CompdrMt&gt;    16          4</span></span>
+<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a><span class="co">#&gt;  7 &lt;CompdrMt&gt;    17          4</span></span>
+<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a><span class="co">#&gt;  8 &lt;CompdrMt&gt;    18          4</span></span>
+<span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a><span class="co">#&gt;  9 &lt;CompdrMt&gt;    19          4</span></span>
+<span id="cb5-17"><a href="#cb5-17" tabindex="-1"></a><span class="co">#&gt; 10 &lt;CompdrMt&gt;    20          4</span></span></code></pre></div>
 </div>
 <div id="including-stage-descriptions-and-version-information" class="section level1">
 <h1>Including stage descriptions and version information</h1>
@@ -544,51 +543,51 @@ stage definitions. Since these information were not provided,
 <code>cdb_build_cdb()</code> automatically creates some information. You
 can view that information like this (using square brackets to choose a
 particular matrix model):</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">matrixClass</span>(x)[<span class="dv">1</span>]</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [[1]]</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   MatrixClassOrganized MatrixClassAuthor MatrixClassNumber</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1               active                 1                 1</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2               active                 2                 2</span></span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">matrixClass</span>(x)[<span class="dv">1</span>]</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="co">#&gt; [[1]]</span></span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a><span class="co">#&gt;   MatrixClassOrganized MatrixClassAuthor MatrixClassNumber</span></span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a><span class="co">#&gt; 1               active                 1                 1</span></span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a><span class="co">#&gt; 2               active                 2                 2</span></span></code></pre></div>
 <p>In the following example I illustrate how one can include
 descriptions of the stages</p>
 <p>First I create a data frame describing the matrix stages.</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>(stageDescriptor <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">MatrixClassOrganized =</span> <span class="fu">rep</span>(<span class="st">&quot;active&quot;</span>, <span class="dv">2</span>),</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">MatrixClassAuthor =</span> <span class="fu">c</span>(<span class="st">&quot;small&quot;</span>, <span class="st">&quot;large&quot;</span>)</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>))</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   MatrixClassOrganized MatrixClassAuthor</span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1               active             small</span></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2               active             large</span></span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>(stageDescriptor <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>  <span class="at">MatrixClassOrganized =</span> <span class="fu">rep</span>(<span class="st">&quot;active&quot;</span>, <span class="dv">2</span>),</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>  <span class="at">MatrixClassAuthor =</span> <span class="fu">c</span>(<span class="st">&quot;small&quot;</span>, <span class="st">&quot;large&quot;</span>),</span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>  <span class="at">stringsAsFactors =</span> <span class="cn">FALSE</span></span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>))</span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a><span class="co">#&gt;   MatrixClassOrganized MatrixClassAuthor</span></span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a><span class="co">#&gt; 1               active             small</span></span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a><span class="co">#&gt; 2               active             large</span></span></code></pre></div>
 <p>In this case, all stages are the same and I can simply repeat the
 <code>stageDescriptor</code> in a list. However, the size of these data
 frames, and the information within them may vary.</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>stageDesc <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>stageDesc[<span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>] <span class="ot">&lt;-</span> <span class="fu">list</span>(stageDescriptor)</span></code></pre></div>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">cdb_build_cdb</span>(</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">mat_a =</span> Alist, <span class="at">metadata =</span> meta, <span class="at">stages =</span> stageDesc,</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">version =</span> <span class="st">&quot;Matrices Rock!&quot;</span></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in cdb_build_cdb(mat_a = Alist, metadata = meta, stages = stageDesc, :</span></span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Metadata does not include a `SpeciesAccepted` column, so number of species not</span></span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; provided when viewing object.</span></span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>stageDesc <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>stageDesc[<span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>] <span class="ot">&lt;-</span> <span class="fu">list</span>(stageDescriptor)</span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">cdb_build_cdb</span>(</span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>  <span class="at">mat_a =</span> Alist, <span class="at">metadata =</span> meta, <span class="at">stages =</span> stageDesc,</span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>  <span class="at">version =</span> <span class="st">&quot;Matrices Rock!&quot;</span></span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a>)</span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a><span class="co">#&gt; Warning in cdb_build_cdb(mat_a = Alist, metadata = meta, stages = stageDesc, : Metadata does not include a `SpeciesAccepted` column, so number</span></span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a><span class="co">#&gt;               of species not provided when viewing object.</span></span></code></pre></div>
 <p>Now you can access the stage/class description information like this,
 using square brackets to find the information for particular
 matrices.</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">matrixClass</span>(y)[<span class="dv">5</span>]</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [[1]]</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   MatrixClassOrganized MatrixClassAuthor MatrixClassNumber</span></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1               active             small                 1</span></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2               active             large                 2</span></span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="fu">MatrixClassAuthor</span>(y)[<span class="dv">5</span>]</span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [[1]]</span></span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;small&quot; &quot;large&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="fu">matrixClass</span>(y)[<span class="dv">5</span>]</span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a><span class="co">#&gt; [[1]]</span></span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a><span class="co">#&gt;   MatrixClassOrganized MatrixClassAuthor MatrixClassNumber</span></span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a><span class="co">#&gt; 1               active             small                 1</span></span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a><span class="co">#&gt; 2               active             large                 2</span></span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a><span class="fu">MatrixClassAuthor</span>(y)[<span class="dv">5</span>]</span>
+<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a><span class="co">#&gt; [[1]]</span></span>
+<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a><span class="co">#&gt; [1] &quot;small&quot; &quot;large&quot;</span></span></code></pre></div>
 <p>You can also obtain the version information.</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">Version</span>(y)</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;Matrices Rock!&quot;</span></span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">DateCreated</span>(y)</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;2023-03-25&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="fu">Version</span>(y)</span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a><span class="co">#&gt; [1] &quot;Matrices Rock!&quot;</span></span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a><span class="fu">DateCreated</span>(y)</span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a><span class="co">#&gt; [1] &quot;2023-09-02&quot;</span></span></code></pre></div>
 <p>The newly-created database can be saved like this:</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">save</span>(y, <span class="st">&quot;myMatrixDatabase.Rdata&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="fu">save</span>(y, <span class="st">&quot;myMatrixDatabase.Rdata&quot;</span>)</span></code></pre></div>
 <div id="references" class="section level2">
 <h2>References</h2>
 <p>Caswell, H. (2001). Matrix Population Models: Construction, Analysis,

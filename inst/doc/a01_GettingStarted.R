@@ -5,7 +5,8 @@ knitr::opts_chunk$set(
 )
 
 ## ----setupDarwin, include=FALSE, eval = Sys.info()[["sysname"]] == "Darwin"----
-#The following line seems to be required by pkgdown::build_site() on my machine, but causes build to break with R-CMD-CHECK on GH
+# The following line seems to be required by pkgdown::build_site() on my machine,
+# but causes build to break with R-CMD-CHECK on GH
 knitr::opts_chunk$set(dev = "png", dev.args = list(type = "cairo-png"))
 
 ## ---- eval = TRUE,echo=FALSE--------------------------------------------------
@@ -16,7 +17,7 @@ library(Rcompadre)
 #  compadre <- as_cdb(compadre)
 
 ## ----fake fetch data with cdb_fetch, eval=FALSE-------------------------------
-#  Compadre <- cdb_fetch('compadre')
+#  Compadre <- cdb_fetch("compadre")
 
 ## ----load example COMPADRE data, eval=TRUE------------------------------------
 data(Compadre)
@@ -33,8 +34,8 @@ names(Compadre)
 
 ## ----Tables_and_Histograms----------------------------------------------------
 table(Compadre$DicotMonoc)
-hist(Compadre$StudyDuration,main = "StudyDuration")
-plot(Compadre$Lon,Compadre$Lat,main = "Location")
+hist(Compadre$StudyDuration, main = "StudyDuration")
+plot(Compadre$Lon, Compadre$Lat, main = "Location")
 
 ## ----Check species------------------------------------------------------------
 cdb_check_species(Compadre, "Succisa pratensis")
@@ -44,7 +45,9 @@ spList <- c("Succisa pratensis", "Onodrim ent", "Aster amellus")
 cdb_check_species(Compadre, spList)
 
 ## ----Check species3-----------------------------------------------------------
-compadre_succisa<- cdb_check_species(Compadre, "Succisa pratensis", return_db = TRUE)
+compadre_succisa <- cdb_check_species(Compadre, "Succisa pratensis",
+  return_db = TRUE
+)
 compadre_succisa
 
 ## ----get matrices 1-----------------------------------------------------------
@@ -64,12 +67,12 @@ x <- subset(Compadre, DicotMonoc == "Eudicot")
 x
 
 ## ----subset 2-----------------------------------------------------------------
-x <- subset(Compadre,DicotMonoc == "Eudicot" & 
-              Country %in% c("USA", "CAN") & 
-              MatrixDimension > 2)
+x <- subset(Compadre, DicotMonoc == "Eudicot" &
+  Country %in% c("USA", "CAN") &
+  MatrixDimension > 2)
 
 ## ----compare------------------------------------------------------------------
-cdb_compare(Compadre,x)
+cdb_compare(Compadre, x)
 
 ## ----cdb_flag-----------------------------------------------------------------
 Compadre_flagged <- cdb_flag(Compadre)
@@ -78,7 +81,7 @@ Compadre_flagged <- cdb_flag(Compadre)
 x <- subset(Compadre_flagged, check_NA_A == FALSE & check_ergodic == TRUE)
 
 ## ----matrix_calculations------------------------------------------------------
-lambdaVals <- sapply(matA(x), popdemo::eigs, what="lambda")
+lambdaVals <- sapply(matA(x), popdemo::eigs, what = "lambda")
 summary(lambdaVals)
 hist(lambdaVals, main = "Lambda values")
 

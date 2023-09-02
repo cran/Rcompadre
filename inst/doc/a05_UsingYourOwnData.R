@@ -46,7 +46,8 @@ matrixClass(x)[1]
 ## -----------------------------------------------------------------------------
 (stageDescriptor <- data.frame(
   MatrixClassOrganized = rep("active", 2),
-  MatrixClassAuthor = c("small", "large")
+  MatrixClassAuthor = c("small", "large"),
+  stringsAsFactors = FALSE
 ))
 
 ## -----------------------------------------------------------------------------

@@ -5,7 +5,8 @@ knitr::opts_chunk$set(
 )
 
 ## ----setupDarwin, include=FALSE, eval = Sys.info()[["sysname"]] == "Darwin"----
-# The following line seems to be required by pkgdown::build_site() on my machine, but causes build to break with R-CMD-CHECK on GH
+# The following line seems to be required by pkgdown::build_site() on my
+# machine, but causes build to break with R-CMD-CHECK on GH
 knitr::opts_chunk$set(dev = "png", dev.args = list(type = "cairo-png"))
 
 ## -----------------------------------------------------------------------------
@@ -115,12 +116,15 @@ no_missing <- which(CompFlag$check_NA_A == FALSE)
 CompFlag$lambda <- NA
 
 # apply eigs() to all matA with no missing values
-CompFlag$lambda[no_missing] <- sapply(CompFlag$matA[no_missing], popdemo::eigs, what = "lambda")
+CompFlag$lambda[no_missing] <- sapply(CompFlag$matA[no_missing],
+  popdemo::eigs,
+  what = "lambda"
+)
 
 ## -----------------------------------------------------------------------------
 lambdaFn1 <- function(mat) {
   # check mat for missing values: if TRUE return NA, else return eigs(mat)
-  ifelse(any(is.na(mat)), NA, popdemo::eigs(mat, what = "lambda"))
+  ifelse(anyNA(mat), NA, popdemo::eigs(mat, what = "lambda"))
 }
 
 CompUnnest$lambda <- sapply(CompUnnest$matA, lambdaFn1)
