@@ -9,7 +9,7 @@ knitr::opts_chunk$set(
 # but causes build to break with R-CMD-CHECK on GH
 knitr::opts_chunk$set(dev = "png", dev.args = list(type = "cairo-png"))
 
-## ---- eval = TRUE,echo=FALSE--------------------------------------------------
+## ----eval = TRUE,echo=FALSE---------------------------------------------------
 library(Rcompadre)
 
 ## ----fake load the data, eval=FALSE-------------------------------------------
@@ -35,6 +35,8 @@ names(Compadre)
 ## ----Tables_and_Histograms----------------------------------------------------
 table(Compadre$DicotMonoc)
 hist(Compadre$StudyDuration, main = "StudyDuration")
+
+## ----Tables_and_Histograms2---------------------------------------------------
 plot(Compadre$Lon, Compadre$Lat, main = "Location")
 
 ## ----Check species------------------------------------------------------------

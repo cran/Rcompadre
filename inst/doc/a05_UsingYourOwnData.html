@@ -12,7 +12,7 @@
 
 <meta name="author" content="Owen Jones" />
 
-<meta name="date" content="2023-09-02" />
+<meta name="date" content="2024-10-16" />
 
 <title>Using your own matrix data</title>
 
@@ -51,7 +51,7 @@ overflow: visible;
 </style>
 <style type="text/css" data-origin="pandoc">
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -62,7 +62,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
 { counter-reset: source-line 0; }
@@ -340,7 +340,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 <h1 class="title toc-ignore">Using your own matrix data</h1>
 <h4 class="author">Owen Jones</h4>
-<h4 class="date">2023-09-02</h4>
+<h4 class="date">2024-10-16</h4>
 
 
 
@@ -370,7 +370,7 @@ matrix. Typically these matrices are based on demographic processes such
 as growth and survival, sexual reproduction and clonal reproduction.
 These matrices are commonly denoted as the <em>U</em>, <em>F</em> and
 <em>C</em> matrices respectively, and <em>A</em> = <em>U</em> +
-<em>F</em> + <em>C</em> (Caswell 2001, Salguero-Gómez et al. 2015,
+<em>F</em> + <em>C</em> (Caswell 2001, Salguero-Gomez et al. 2015,
 2016).</p>
 <p>Thus, each MPM in the <code>CompadreDB</code> object is provided as a
 list object with four elements representing this set of matrices:
@@ -510,8 +510,8 @@ function <code>matA()</code>.</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">matA</span>(x)[<span class="dv">1</span>]</span>
 <span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="co">#&gt; [[1]]</span></span>
 <span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="co">#&gt;           [,1]      [,2]</span></span>
-<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="co">#&gt; [1,] 0.3953284 0.7762970</span></span>
-<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a><span class="co">#&gt; [2,] 0.3838474 0.3707436</span></span></code></pre></div>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="co">#&gt; [1,] 0.1659634 0.7000140</span></span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a><span class="co">#&gt; [2,] 0.1794142 0.2390083</span></span></code></pre></div>
 <p>Now the matrices are stored in a <code>CompadreDB</code> object they
 can be manipulated in the same diverse ways as the
 <code>CompadreDB</code> object downloaded from the COMPADRE/COMADRE
@@ -585,7 +585,7 @@ matrices.</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="fu">Version</span>(y)</span>
 <span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a><span class="co">#&gt; [1] &quot;Matrices Rock!&quot;</span></span>
 <span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a><span class="fu">DateCreated</span>(y)</span>
-<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a><span class="co">#&gt; [1] &quot;2023-09-02&quot;</span></span></code></pre></div>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a><span class="co">#&gt; [1] &quot;2024-10-16&quot;</span></span></code></pre></div>
 <p>The newly-created database can be saved like this:</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="fu">save</span>(y, <span class="st">&quot;myMatrixDatabase.Rdata&quot;</span>)</span></code></pre></div>
 <div id="references" class="section level2">
@@ -593,20 +593,20 @@ matrices.</p>
 <p>Caswell, H. (2001). Matrix Population Models: Construction, Analysis,
 and Interpretation. 2nd edition. Sinauer Associates, Sunderland, MA.
 ISBN-10: 0878930965</p>
-<p>Salguero‐Gómez, R. , Jones, O. R., Archer, C. R., Buckley, Y. M.,
-Che‐Castaldo, J. , Caswell, H. , Hodgson, D. , Scheuerlein, A. , Conde,
+<p>Salguero-Gomez, R. , Jones, O. R., Archer, C. R., Buckley, Y. M.,
+Che-Castaldo, J. , Caswell, H. , Hodgson, D. , Scheuerlein, A. , Conde,
 D. A., Brinks, E. , Buhr, H. , Farack, C. , Gottschalk, F. , Hartmann,
-A. , Henning, A. , Hoppe, G. , Römer, G. , Runge, J. , Ruoff, T. ,
+A. , Henning, A. , Hoppe, G. , Romer, G. , Runge, J. , Ruoff, T. ,
 Wille, J. , Zeh, S. , Davison, R. , Vieregg, D. , Baudisch, A. ,
 Altwegg, R. , Colchero, F. , Dong, M. , Kroon, H. , Lebreton, J. ,
 Metcalf, C. J., Neel, M. M., Parker, I. M., Takada, T. , Valverde, T. ,
-Vélez‐Espino, L. A., Wardle, G. M., Franco, M. and Vaupel, J. W. (2015),
+Velez-Espino, L. A., Wardle, G. M., Franco, M. and Vaupel, J. W. (2015),
 The COMPADRE Plant Matrix Database: an open online repository for plant
 demography. J Ecol, 103: 202-218. &lt;:10.1111/1365-2745.12334&gt;</p>
-<p>Salguero‐Gómez, R. , Jones, O. R., Archer, C. R., Bein, C. , Buhr, H.
+<p>Salguero-Gomez, R. , Jones, O. R., Archer, C. R., Bein, C. , Buhr, H.
 , Farack, C. , Gottschalk, F. , Hartmann, A. , Henning, A. , Hoppe, G. ,
-Römer, G. , Ruoff, T. , Sommer, V. , Wille, J. , Voigt, J. , Zeh, S. ,
-Vieregg, D. , Buckley, Y. M., Che‐Castaldo, J. , Hodgson, D. ,
+Romer, G. , Ruoff, T. , Sommer, V. , Wille, J. , Voigt, J. , Zeh, S. ,
+Vieregg, D. , Buckley, Y. M., Che-Castaldo, J. , Hodgson, D. ,
 Scheuerlein, A. , Caswell, H. and Vaupel, J. W. (2016), COMADRE: a
 global data base of animal demography. J Anim Ecol, 85: 371-384.
 &lt;:10.1111/1365-2656.12482&gt;</p>

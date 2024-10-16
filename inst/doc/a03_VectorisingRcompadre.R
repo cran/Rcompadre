@@ -49,7 +49,7 @@ NullStages <- function(mat) any(colSums(mat) == 0)
 # apply function to every element of A
 Compadre$null_stages <- sapply(Compadre$matA, NullStages)
 
-## ---- eval=FALSE--------------------------------------------------------------
+## ----eval=FALSE---------------------------------------------------------------
 #  NullStages(Compadre$matA[[1]]) # apply function to single element
 
 ## -----------------------------------------------------------------------------

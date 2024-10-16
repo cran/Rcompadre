@@ -42,7 +42,7 @@ compadre_use <- Compadre %>%
   cdb_flag() %>% # first argument is Compadre, from previous line
   subset(check_NA_A == FALSE) # first argument is output of cdb_flag()
 
-## ---- warning=FALSE-----------------------------------------------------------
+## ----warning=FALSE------------------------------------------------------------
 compadre_euro <- Compadre %>%
   filter(Continent == "Europe") %>%
   mutate(Nordic = Country %in% c("NOR", "SWE", "DNK", "ISL", "FIN"))
