@@ -5,9 +5,23 @@ knitr::opts_chunk$set(
 )
 
 ## ----setupDarwin, include=FALSE, eval = Sys.info()[["sysname"]] == "Darwin"----
-# The following line seems to be required by pkgdown::build_site() on my
-# machine, but causes build to break with R-CMD-CHECK on GH
-knitr::opts_chunk$set(dev = "png", dev.args = list(type = "cairo-png"))
+# Prefer cairo-png for pkgdown on macOS when available, but fall back quietly
+# when XQuartz/Cairo is not installed.
+png_probe <- tempfile(fileext = ".png")
+can_use_cairo_png <- isTRUE(tryCatch(
+  {
+    grDevices::png(filename = png_probe, type = "cairo-png")
+    grDevices::dev.off()
+    TRUE
+  },
+  error = function(...) FALSE,
+  warning = function(...) FALSE
+))
+unlink(png_probe)
+
+if (can_use_cairo_png) {
+  knitr::opts_chunk$set(dev = "png", dev.args = list(type = "cairo-png"))
+}
 
 ## -----------------------------------------------------------------------------
 library(Rcompadre)
@@ -50,7 +64,7 @@ NullStages <- function(mat) any(colSums(mat) == 0)
 Compadre$null_stages <- sapply(Compadre$matA, NullStages)
 
 ## ----eval=FALSE---------------------------------------------------------------
-#  NullStages(Compadre$matA[[1]]) # apply function to single element
+# NullStages(Compadre$matA[[1]]) # apply function to single element
 
 ## -----------------------------------------------------------------------------
 Compadre$null_stages <- sapply(matA(Compadre), NullStages)
@@ -92,18 +106,20 @@ mapply(
 ) # second argument to vectorise over
 
 ## ----error=TRUE---------------------------------------------------------------
+try({
 # works for a single matrix
 popdemo::eigs(CompUnnest$matA[[1]], what = "lambda")
 
 # but fails when applied to all matrices because a few have missing values
 CompUnnest$lambda <- sapply(CompUnnest$matA, popdemo::eigs, what = "lambda")
+})
 
 ## -----------------------------------------------------------------------------
 # add column 'check_NA_A', indicating whether matA contains missing values (T/F)
 CompFlag <- cdb_flag(CompUnnest, checks = "check_NA_A")
 
 # remove rows where matA contains missing values
-CompSub <- subset(CompFlag, check_NA_A == FALSE)
+CompSub <- dplyr::filter(CompFlag, check_NA_A == FALSE)
 
 # apply lambda() to every remaining matA
 CompSub$lambda <- sapply(matA(CompSub), popdemo::eigs, what = "lambda")

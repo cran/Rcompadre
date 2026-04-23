@@ -5,16 +5,32 @@ knitr::opts_chunk$set(
 )
 
 ## ----setupDarwin, include=FALSE, eval = Sys.info()[["sysname"]] == "Darwin"----
-# The following line seems to be required by pkgdown::build_site() on my machine,
-# but causes build to break with R-CMD-CHECK on GH
-knitr::opts_chunk$set(dev = "png", dev.args = list(type = "cairo-png"))
+# Prefer cairo-png for pkgdown on macOS when available, but fall back quietly
+# when XQuartz/Cairo is not installed.
+png_probe <- tempfile(fileext = ".png")
+can_use_cairo_png <- isTRUE(tryCatch(
+  {
+    grDevices::png(filename = png_probe, type = "cairo-png")
+    grDevices::dev.off()
+    TRUE
+  },
+  error = function(...) FALSE,
+  warning = function(...) FALSE
+))
+unlink(png_probe)
+
+if (can_use_cairo_png) {
+  knitr::opts_chunk$set(dev = "png", dev.args = list(type = "cairo-png"))
+}
 
 ## ----eval=FALSE---------------------------------------------------------------
-#  install.packages("rcrossref")
+# install.packages("rcrossref")
 
 ## -----------------------------------------------------------------------------
 library(Rcompadre)
-library(rcrossref)
+if (requireNamespace("rcrossref", quietly = TRUE)) {
+  library(rcrossref)
+}
 
 ## ----load example COMPADRE data, eval=TRUE------------------------------------
 data(Comadre)
@@ -27,6 +43,6 @@ Comadre$Authors
 Comadre$YearPublication
 Comadre$DOI_ISBN
 
-## -----------------------------------------------------------------------------
+## ----eval = requireNamespace("rcrossref", quietly = TRUE)---------------------
 cr_cn(unique(Comadre$DOI_ISBN), format = "text", style = "apa")
 

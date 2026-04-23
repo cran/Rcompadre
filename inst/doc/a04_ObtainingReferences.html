@@ -12,7 +12,7 @@
 
 <meta name="author" content="Owen Jones" />
 
-<meta name="date" content="2024-10-16" />
+<meta name="date" content="2026-04-22" />
 
 <title>Obtaining references</title>
 
@@ -50,8 +50,9 @@ overflow: visible;
 }
 </style>
 <style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -62,7 +63,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
 { counter-reset: source-line 0; }
@@ -340,7 +341,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 <h1 class="title toc-ignore">Obtaining references</h1>
 <h4 class="author">Owen Jones</h4>
-<h4 class="date">2024-10-16</h4>
+<h4 class="date">2026-04-22</h4>
 
 
 
@@ -356,7 +357,12 @@ of the International DOI Foundation.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;rcrossref&quot;</span>)</span></code></pre></div>
 <p>We should then load the required packages like this:</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">library</span>(Rcompadre)</span>
-<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="fu">library</span>(rcrossref)</span></code></pre></div>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">requireNamespace</span>(<span class="st">&quot;rcrossref&quot;</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) {</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>  <span class="fu">library</span>(rcrossref)</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>}</span></code></pre></div>
+<p>If <code>rcrossref</code> is not installed, the citation lookup
+example below will be shown but not executed during vignette
+rendering.</p>
 <p>We aim to obtain the full reference and DOI for the matrices for a
 set of matrices. In this example we will use the example data available
 in the <code>Rcompadre</code> package.</p>

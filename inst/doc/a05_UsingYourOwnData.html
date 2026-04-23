@@ -12,7 +12,7 @@
 
 <meta name="author" content="Owen Jones" />
 
-<meta name="date" content="2024-10-16" />
+<meta name="date" content="2026-04-22" />
 
 <title>Using your own matrix data</title>
 
@@ -50,8 +50,9 @@ overflow: visible;
 }
 </style>
 <style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -62,7 +63,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
 { counter-reset: source-line 0; }
@@ -340,7 +341,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 <h1 class="title toc-ignore">Using your own matrix data</h1>
 <h4 class="author">Owen Jones</h4>
-<h4 class="date">2024-10-16</h4>
+<h4 class="date">2026-04-22</h4>
 
 
 
@@ -509,9 +510,9 @@ used to simulate the data.</p>
 function <code>matA()</code>.</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">matA</span>(x)[<span class="dv">1</span>]</span>
 <span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="co">#&gt; [[1]]</span></span>
-<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="co">#&gt;           [,1]      [,2]</span></span>
-<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="co">#&gt; [1,] 0.1659634 0.7000140</span></span>
-<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a><span class="co">#&gt; [2,] 0.1794142 0.2390083</span></span></code></pre></div>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="co">#&gt;           [,1]       [,2]</span></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="co">#&gt; [1,] 0.1982897 0.79016322</span></span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a><span class="co">#&gt; [2,] 0.4235480 0.04203759</span></span></code></pre></div>
 <p>Now the matrices are stored in a <code>CompadreDB</code> object they
 can be manipulated in the same diverse ways as the
 <code>CompadreDB</code> object downloaded from the COMPADRE/COMADRE
@@ -585,7 +586,7 @@ matrices.</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="fu">Version</span>(y)</span>
 <span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a><span class="co">#&gt; [1] &quot;Matrices Rock!&quot;</span></span>
 <span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a><span class="fu">DateCreated</span>(y)</span>
-<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a><span class="co">#&gt; [1] &quot;2024-10-16&quot;</span></span></code></pre></div>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a><span class="co">#&gt; [1] &quot;2026-04-22&quot;</span></span></code></pre></div>
 <p>The newly-created database can be saved like this:</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="fu">save</span>(y, <span class="st">&quot;myMatrixDatabase.Rdata&quot;</span>)</span></code></pre></div>
 <div id="references" class="section level2">

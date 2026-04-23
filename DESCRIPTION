@@ -1,7 +1,7 @@
 Type: Package
 Package: Rcompadre
 Title: Utilities for using the 'COM(P)ADRE' Matrix Model Database
-Version: 1.4.0
+Version: 1.5.0
 Authors@R: c(
     person("Patrick", "Barks", , "barks@biology.sdu.dk", role = "aut",
            comment = c(ORCID = "0000-0002-5947-8151")),
@@ -30,36 +30,39 @@ License: GPL-3
 URL: https://github.com/jonesor/Rcompadre
 BugReports: https://github.com/jonesor/Rcompadre/issues
 Depends: R (>= 2.10)
-Imports: methods, popdemo, stats, tibble, utils
-Suggests: dplyr, ggplot2, knitr, maps, rcrossref, rmarkdown, testthat
+Imports: dplyr, methods, popdemo, stats, tibble, utils
+Suggests: ggplot2, grDevices, knitr, maps, rcrossref, rmarkdown,
+        testthat
 VignetteBuilder: knitr
 Config/testthat/edition: 3
 Config/testthat/parallel: false
 Encoding: UTF-8
 Language: en-GB
 LazyData: true
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.2
 Collate: 'CompadreDB.R' 'Rcompadre-package.R' 'CompadreDB-Methods.R'
         'CompadreDB-Subsetting.R' 'CompadreDB-Tidyverse.R'
         'CompadreMat.R' 'ClassUnionMethods.R' 'cdb_check_species.R'
         'cdb_build_cdb.R' 'cdb_collapse.R' 'cdb_compare.R'
-        'cdb_fetch.R' 'cdb_flag.R' 'cdb_flatten.R' 'cdb_id.R'
-        'cdb_id_stages.R' 'cdb_id_studies.R' 'cdb_mean_matF.R'
-        'cdb_metadata.R' 'cdb_rbind.R' 'cdb_unflatten.R' 'cdb_unnest.R'
-        'data.R' 'mpm_elementwise_apply.R' 'mpm_mean.R' 'mpm_methods.R'
+        'cdb_export_matlab.R' 'cdb_fetch.R' 'cdb_flag.R'
+        'cdb_flatten.R' 'cdb_id.R' 'cdb_id_stages.R' 'cdb_id_studies.R'
+        'cdb_mean_matF.R' 'cdb_metadata.R' 'cdb_rbind.R'
+        'cdb_unflatten.R' 'cdb_unnest.R' 'data.R'
+        'mpm_elementwise_apply.R' 'mpm_mean.R' 'mpm_methods.R'
         'mpm_sd.R' 'mpm_median.R' 'string_representation.R' 'zzz.R'
 NeedsCompilation: no
-Packaged: 2024-10-16 08:44:46 UTC; jones
-Author: Patrick Barks [aut] (<https://orcid.org/0000-0002-5947-8151>),
+Packaged: 2026-04-22 19:40:45 UTC; jones
+Author: Patrick Barks [aut] (ORCID: <https://orcid.org/0000-0002-5947-8151>),
   Danny Buss [aut],
-  Roberto Salguero-Gomez [aut] (<https://orcid.org/0000-0002-6085-4433>),
-  Iain Stott [aut] (<https://orcid.org/0000-0003-2724-7436>),
-  William K. Petry [aut] (<https://orcid.org/0000-0002-5230-5987>),
-  Tamora James [aut] (<https://orcid.org/0000-0003-1363-4742>),
-  Owen Jones [aut, cre] (<https://orcid.org/0000-0001-5720-4686>),
-  Julia Jones [aut] (<https://orcid.org/0000-0001-9223-1778>),
-  Gesa Römer [aut] (<https://orcid.org/0000-0002-4859-5870>),
-  Sam Levin [aut] (<https://orcid.org/0000-0002-3289-9925>)
+  Roberto Salguero-Gomez [aut] (ORCID:
+    <https://orcid.org/0000-0002-6085-4433>),
+  Iain Stott [aut] (ORCID: <https://orcid.org/0000-0003-2724-7436>),
+  William K. Petry [aut] (ORCID: <https://orcid.org/0000-0002-5230-5987>),
+  Tamora James [aut] (ORCID: <https://orcid.org/0000-0003-1363-4742>),
+  Owen Jones [aut, cre] (ORCID: <https://orcid.org/0000-0001-5720-4686>),
+  Julia Jones [aut] (ORCID: <https://orcid.org/0000-0001-9223-1778>),
+  Gesa Römer [aut] (ORCID: <https://orcid.org/0000-0002-4859-5870>),
+  Sam Levin [aut] (ORCID: <https://orcid.org/0000-0002-3289-9925>)
 Maintainer: Owen Jones <jones@biology.sdu.dk>
 Repository: CRAN
-Date/Publication: 2024-10-16 22:30:02 UTC
+Date/Publication: 2026-04-23 05:10:41 UTC

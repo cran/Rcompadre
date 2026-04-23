@@ -12,7 +12,7 @@
 
 <meta name="author" content="Patrick Barks" />
 
-<meta name="date" content="2024-10-16" />
+<meta name="date" content="2026-04-22" />
 
 <title>Vectorising with Rcompadre</title>
 
@@ -50,8 +50,9 @@ overflow: visible;
 }
 </style>
 <style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -62,7 +63,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
 { counter-reset: source-line 0; }
@@ -340,7 +341,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 <h1 class="title toc-ignore">Vectorising with Rcompadre</h1>
 <h4 class="author">Patrick Barks</h4>
-<h4 class="date">2024-10-16</h4>
+<h4 class="date">2026-04-22</h4>
 
 
 
@@ -553,7 +554,8 @@ work on most of the <strong>A</strong> matrices in
 <span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a></span>
 <span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a><span class="co"># but fails when applied to all matrices because a few have missing values</span></span>
 <span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a>CompUnnest<span class="sc">$</span>lambda <span class="ot">&lt;-</span> <span class="fu">sapply</span>(CompUnnest<span class="sc">$</span>matA, popdemo<span class="sc">::</span>eigs, <span class="at">what =</span> <span class="st">&quot;lambda&quot;</span>)</span>
-<span id="cb15-7"><a href="#cb15-7" tabindex="-1"></a><span class="co">#&gt; Error in eigen(A): infinite or missing values in &#39;x&#39;</span></span></code></pre></div>
+<span id="cb15-7"><a href="#cb15-7" tabindex="-1"></a><span class="co">#&gt; Error in `eigen()`:</span></span>
+<span id="cb15-8"><a href="#cb15-8" tabindex="-1"></a><span class="co">#&gt; ! infinite or missing values in &#39;x&#39;</span></span></code></pre></div>
 <p>There are two basic approaches to overcoming this:</p>
 <div id="remove-or-skip-problem-elements" class="section level4">
 <h4>1. Remove or skip problem elements</h4>
@@ -565,7 +567,7 @@ values, and other common issues that might hinder our analyses.</p>
 <span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a>CompFlag <span class="ot">&lt;-</span> <span class="fu">cdb_flag</span>(CompUnnest, <span class="at">checks =</span> <span class="st">&quot;check_NA_A&quot;</span>)</span>
 <span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a></span>
 <span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a><span class="co"># remove rows where matA contains missing values</span></span>
-<span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a>CompSub <span class="ot">&lt;-</span> <span class="fu">subset</span>(CompFlag, check_NA_A <span class="sc">==</span> <span class="cn">FALSE</span>)</span>
+<span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a>CompSub <span class="ot">&lt;-</span> dplyr<span class="sc">::</span><span class="fu">filter</span>(CompFlag, check_NA_A <span class="sc">==</span> <span class="cn">FALSE</span>)</span>
 <span id="cb16-6"><a href="#cb16-6" tabindex="-1"></a></span>
 <span id="cb16-7"><a href="#cb16-7" tabindex="-1"></a><span class="co"># apply lambda() to every remaining matA</span></span>
 <span id="cb16-8"><a href="#cb16-8" tabindex="-1"></a>CompSub<span class="sc">$</span>lambda <span class="ot">&lt;-</span> <span class="fu">sapply</span>(<span class="fu">matA</span>(CompSub), popdemo<span class="sc">::</span>eigs, <span class="at">what =</span> <span class="st">&quot;lambda&quot;</span>)</span>

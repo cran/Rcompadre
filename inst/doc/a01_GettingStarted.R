@@ -5,19 +5,33 @@ knitr::opts_chunk$set(
 )
 
 ## ----setupDarwin, include=FALSE, eval = Sys.info()[["sysname"]] == "Darwin"----
-# The following line seems to be required by pkgdown::build_site() on my machine,
-# but causes build to break with R-CMD-CHECK on GH
-knitr::opts_chunk$set(dev = "png", dev.args = list(type = "cairo-png"))
+# Prefer cairo-png for pkgdown on macOS when available, but fall back quietly
+# when XQuartz/Cairo is not installed.
+png_probe <- tempfile(fileext = ".png")
+can_use_cairo_png <- isTRUE(tryCatch(
+  {
+    grDevices::png(filename = png_probe, type = "cairo-png")
+    grDevices::dev.off()
+    TRUE
+  },
+  error = function(...) FALSE,
+  warning = function(...) FALSE
+))
+unlink(png_probe)
+
+if (can_use_cairo_png) {
+  knitr::opts_chunk$set(dev = "png", dev.args = list(type = "cairo-png"))
+}
 
 ## ----eval = TRUE,echo=FALSE---------------------------------------------------
 library(Rcompadre)
 
 ## ----fake load the data, eval=FALSE-------------------------------------------
-#  load("COMPADRE_v.4.0.1.RData")
-#  compadre <- as_cdb(compadre)
+# load("COMPADRE_v.4.0.1.RData")
+# compadre <- as_cdb(compadre)
 
 ## ----fake fetch data with cdb_fetch, eval=FALSE-------------------------------
-#  Compadre <- cdb_fetch("compadre")
+# Compadre <- cdb_fetch("compadre")
 
 ## ----load example COMPADRE data, eval=TRUE------------------------------------
 data(Compadre)

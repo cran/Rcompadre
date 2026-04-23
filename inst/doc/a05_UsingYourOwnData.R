@@ -69,5 +69,5 @@ Version(y)
 DateCreated(y)
 
 ## ----eval=FALSE---------------------------------------------------------------
-#  save(y, "myMatrixDatabase.Rdata")
+# save(y, "myMatrixDatabase.Rdata")
 

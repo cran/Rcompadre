@@ -4,10 +4,26 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 
+has_maps <- requireNamespace("maps", quietly = TRUE)
+
 ## ----setupDarwin, include=FALSE, eval = Sys.info()[["sysname"]] == "Darwin"----
-# The following line seems to be required by pkgdown::build_site() on my machine,
-# but causes build to break with R-CMD-CHECK on GH
-knitr::opts_chunk$set(dev = "png", dev.args = list(type = "cairo-png"))
+# Prefer cairo-png for pkgdown on macOS when available, but fall back quietly
+# when XQuartz/Cairo is not installed.
+png_probe <- tempfile(fileext = ".png")
+can_use_cairo_png <- isTRUE(tryCatch(
+  {
+    grDevices::png(filename = png_probe, type = "cairo-png")
+    grDevices::dev.off()
+    TRUE
+  },
+  error = function(...) FALSE,
+  warning = function(...) FALSE
+))
+unlink(png_probe)
+
+if (can_use_cairo_png) {
+  knitr::opts_chunk$set(dev = "png", dev.args = list(type = "cairo-png"))
+}
 
 ## ----message=FALSE------------------------------------------------------------
 library(Rcompadre)
@@ -30,12 +46,12 @@ x <- 1:3
 y %>% data.frame(col1 = x, col2 = .) # use dot to pass object to second argument
 
 ## ----eval=FALSE---------------------------------------------------------------
-#  # approach 1 (nested functions)
-#  compadre_use <- filter(cdb_flag(Compadre), check_NA_A == FALSE)
-#  
-#  # approach 2 (intermediate step)
-#  compadre_flag <- cdb_flag(Compadre)
-#  compadre_use <- filter(compadre_flag, check_NA_A == FALSE)
+# # approach 1 (nested functions)
+# compadre_use <- filter(cdb_flag(Compadre), check_NA_A == FALSE)
+# 
+# # approach 2 (intermediate step)
+# compadre_flag <- cdb_flag(Compadre)
+# compadre_use <- filter(compadre_flag, check_NA_A == FALSE)
 
 ## -----------------------------------------------------------------------------
 compadre_use <- Compadre %>%
@@ -107,7 +123,7 @@ singleRepresentativeSpecies <- Compadre %>%
   group_by(SpeciesAccepted) %>%
   slice(sample(1))
 
-## ----warning=FALSE, fig.width = 6, fig.height = 4-----------------------------
+## ----warning=FALSE, fig.width = 6, fig.height = 4, eval = has_maps------------
 ggplot2::ggplot(Compadre, aes(Lon, Lat)) +
   borders(database = "world", fill = "grey80", col = NA) +
   geom_point(col = "steelblue", size = 1.8, alpha = 0.8)

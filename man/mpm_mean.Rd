@@ -21,7 +21,7 @@ A matrix (\code{mat_mean}) or a CompadreMat object (\code{mpm_mean}).
 }
 \description{
 Calculates an element-wise mean over a list of matrices or CompadreMat
-objects of constant dimension. 
+objects of constant dimension.
 
 The difference between function \code{mat_mean}) and (\code{mpm_mean} is that
 \code{mat_mean} takes input as a list of matrices (e.g., a list of **A**
@@ -39,7 +39,7 @@ be \code{0}.
 # there are four rows for species 'Haplopappus_radiatus' in Compadre
 mpms <- Compadre$mat[Compadre$SpeciesAuthor == "Haplopappus_radiatus"]
 
-#The object mpms is a list, containing compadre objects
+# The object mpms is a list, containing compadre objects
 class(mpms)
 class(mpms[[1]])
 
@@ -51,10 +51,11 @@ mat_mean(mats)
 }
 \seealso{
 Other data management: 
+\code{\link{cdb_export_matlab}()},
 \code{\link{cdb_flatten}()},
+\code{\link{cdb_id}()},
 \code{\link{cdb_id_stages}()},
 \code{\link{cdb_id_studies}()},
-\code{\link{cdb_id}()},
 \code{\link{cdb_mean_matF}()},
 \code{\link{cdb_rbind}()},
 \code{\link{cdb_unflatten}()},
